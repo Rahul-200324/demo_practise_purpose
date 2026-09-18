@@ -1,27 +1,38 @@
-from flask import Flask, jsonify
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
-@app.route("/")
+
+@app.route("/", methods=["GET", "POST"])
 def home():
-    return "Welcome to Student API!"
 
-@app.route("/student")
-def student():
-    student_data = {
-        "name": "Rahul",
-        "course": "B.E Electrical and Electronics",
-        "skills": ["Python", "Java", "SQL", "Docker"],
-        "status": "Learning DevOps"
-    }
+    message = ""
 
-    return jsonify(student_data)
+    if request.method == "POST":
+        name = request.form.get("name")
+
+        if name:
+            message = f"Hello {name}! 👋 Welcome to Docker & Kubernetes!"
+        else:
+            message = "Please enter your name."
+
+    return render_template("index.html", message=message)
+
 
 @app.route("/health")
 def health():
-    return jsonify({
-        "status": "Karnataka"
-    })
+    return {
+        "status": "UP",
+        "message": "Application is healthy"
+    }
+
+
+@app.route("/api")
+def api():
+    return {
+        "application": "Docker Kubernetes Practice App",
+        "version": "1.0"
+    }
 
 
 if __name__ == "__main__":
